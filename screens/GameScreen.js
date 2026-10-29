@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, Alert, FlatList } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Alert,
+  FlatList,
+  useWindowDimensions,
+} from "react-native";
 import Title from "../components/ui/Title";
 import { useEffect, useState } from "react";
 import NumberContainer from "../components/game/NumberContainer";
@@ -24,6 +30,7 @@ const GameScreen = ({ userNumber, onGameOver, setRoundCount }) => {
   const initialGuess = generateRandomBetween(1, 100, userNumber);
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
   const [guessRounds, setGuessRounds] = useState([initialGuess]);
+  const { width, height } = useWindowDimensions();
 
   useEffect(() => {
     if (currentGuess === userNumber) {
@@ -66,9 +73,8 @@ const GameScreen = ({ userNumber, onGameOver, setRoundCount }) => {
 
   const guessRoundsListLength = guessRounds.length;
 
-  return (
-    <View style={styles.screen}>
-      <Title>Opponent's Guess</Title>
+  let content = (
+    <>
       <NumberContainer>{currentGuess}</NumberContainer>
       <View>
         <Card>
@@ -90,11 +96,39 @@ const GameScreen = ({ userNumber, onGameOver, setRoundCount }) => {
                 <AntDesign name="minus" size={12} color="white" />
               </PrimaryButton>
             </View>
-            <View></View>
           </View>
         </Card>
       </View>
-      <View style={styles.listContainer}>
+    </>
+  );
+
+  if (width > height) {
+    content = (
+      <>
+        <View style={styles.buttonsContainerLandscape}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton pressHandler={nextGuessHandler.bind(this, "higher")}>
+              <AntDesign name="plus" size={12} color="white" />
+            </PrimaryButton>
+          </View>
+          <NumberContainer>{currentGuess}</NumberContainer>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton pressHandler={nextGuessHandler.bind(this, "lower")}>
+              <AntDesign name="minus" size={12} color="white" />
+            </PrimaryButton>
+          </View>
+        </View>
+      </>
+    );
+  }
+
+  const landscapeListPadding = width > height ? 6 : 16;
+
+  return (
+    <View style={styles.screen}>
+      <Title>Opponent's Guess</Title>
+      {content}
+      <View style={[styles.listContainer, { padding: landscapeListPadding }]}>
         <FlatList
           data={guessRounds}
           renderItem={(itemData) => {
@@ -118,6 +152,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     padding: 24,
+    alignItems: "center",
   },
   instructionText: {
     marginBottom: 20,
@@ -127,6 +162,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
+  },
+  buttonsContainerLandscape: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   listContainer: {
     flex: 1,

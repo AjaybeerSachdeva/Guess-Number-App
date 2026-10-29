@@ -8,6 +8,7 @@ import { Colors } from "./constants/colors";
 import GameOverScreen from "./screens/GameOverScreen";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -67,24 +68,27 @@ export default function App() {
   }
 
   return (
-    <LinearGradient
-      colors={[Colors.primary700, Colors.yellow]}
-      style={styles.rootContainer}
-    >
-      <ImageBackground
+    <>
+      <StatusBar style="light" />
+      <LinearGradient
+        colors={[Colors.primary700, Colors.yellow]}
         style={styles.rootContainer}
-        imageStyle={styles.backgroundImage}
-        source={require("./assets/background (1).png")}
-        resizeMode="cover"
       >
-        <SafeAreaView
+        <ImageBackground
           style={styles.rootContainer}
-          edges={["top", "left", "right", "bottom"]}
+          imageStyle={styles.backgroundImage}
+          source={require("./assets/background (1).png")}
+          resizeMode="cover"
         >
-          {screen}
-        </SafeAreaView>
-      </ImageBackground>
-    </LinearGradient>
+          <SafeAreaView
+            style={styles.rootContainer}
+            edges={["top", "left", "right", "bottom"]}
+          >
+            {screen}
+          </SafeAreaView>
+        </ImageBackground>
+      </LinearGradient>
+    </>
   );
 }
 
